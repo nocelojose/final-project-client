@@ -12,6 +12,17 @@ const allCampuses = (state = [], action) => {  // Empty array as default Initial
   switch (action.type) {
     case at.FETCH_ALL_CAMPUSES:
       return action.payload;
+    // UPDATE campuses.js to append, remove and add one campus
+    case at.ADD_CAMPUS:
+      return [...state, action.payload];
+
+    case at.DELETE_CAMPUS:
+      return state.filter(campus => campus.id !== action.payload);
+
+    case at.EDIT_CAMPUS:
+      return state.map(campus =>
+        campus.id === action.payload.id ? action.payload : campus
+      );
     default:
       // If the Reducer doesn't recognize the Action Type, returns the previous (current) State unchanged.
       return state;
