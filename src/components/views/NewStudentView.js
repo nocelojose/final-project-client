@@ -4,98 +4,154 @@ NewStudentView.js
 The Views component is responsible for rendering web page with data provided by the corresponding Container component.
 It constructs a React component to display the new student page.
 ================================================== */
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useState } from "react";
 
-// Create styling for the input form
-const useStyles = makeStyles( () => ({
-  formContainer:{  
-    width: '500px',
-    backgroundColor: '#f0f0f5',
-    borderRadius: '5px',
-    margin: 'auto',
+// Material UI
+import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+
+const useStyles = makeStyles(() => ({
+  page: {
+    minHeight: "calc(100vh - 64px)",
+    padding: "30px 20px",
+    backgroundColor: "#f5f6fa",
+  },
+  container: {
+    maxWidth: "900px",
+    margin: "0 auto",
+  },
+  card: {
+    backgroundColor: "white",
+    borderRadius: "10px",
+    padding: "18px",
+    border: "1px solid #e6e6ef",
   },
   title: {
-    flexGrow: 1,
-    textAlign: 'left',
-    textDecoration: 'none'
-  }, 
-  customizeAppBar:{
-    backgroundColor: '#11153e',
-    shadows: ['none'],
+    fontWeight: "bold",
+    color: "#11153e",
   },
-  formTitle:{
-    backgroundColor:'#c5c8d6',
-    marginBottom: '15px',
-    textAlign: 'center',
-    borderRadius: '5px 5px 0px 0px',
-    padding: '3px'
+  form: {
+    marginTop: "14px",
+    display: "grid",
+    gap: "14px",
+  },
+  buttonRow: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "10px",
+    marginTop: "16px",
+  },
+  error: {
+    marginTop: "10px",
+    color: "crimson",
+    fontWeight: "bold",
+  },
+  previewImg: {
+    width: "220px",
+    height: "220px",
+    objectFit: "cover",
+    borderRadius: "10px",
+    border: "1px solid #e6e6ef",
+    marginTop: "6px",
   },
 }));
 
 const NewStudentView = (props) => {
-  const {handleChange, handleSubmit, error } = props;
+  const { handleChange, handleSubmit, error } = props;
   const classes = useStyles();
 
-  // Render a New Student view with an input form
+  // purely for preview (doesn't change your container logic)
+  const [imagePreview, setImagePreview] = useState("");
+
+  const onChange = (e) => {
+    handleChange(e);
+    if (e.target.name === "imageUrl") {
+      setImagePreview(e.target.value);
+    }
+  };
+
   return (
-    <div>
-      <h1>New Student</h1>
+    <div className={classes.page}>
+      <div className={classes.container}>
+        <div className={classes.card}>
+          <Typography variant="h4" className={classes.title}>
+            Add New Student
+          </Typography>
 
-      <div className={classes.root}>
-        <div className={classes.formContainer}>
-          <div className={classes.formTitle}>
-            <Typography style={{fontWeight: 'bold', fontFamily: 'Courier, sans-serif', fontSize: '20px', color: '#11153e'}}>
-              Add a Student
-            </Typography>
-          </div>
-          <form style={{textAlign: 'center'}} onSubmit={(e) => handleSubmit(e)}>
-            <label style= {{color:'#11153e', fontWeight: 'bold'}}>First Name: </label>
-            <input type="text" name="firstname" onChange ={(e) => handleChange(e)} />
-            <br/>
-            <br/>
+          {error ? <div className={classes.error}>{error}</div> : null}
 
-            <label style={{color:'#11153e', fontWeight: 'bold'}}>Last Name: </label>
-            <input type="text" name="lastname" onChange={(e) => handleChange(e)} />
-            <br/>
-            <br/>
-            {error && (
-              <Typography style={{ color: "red", fontWeight: "bold", marginBottom: "10px" }}>
-                {error}
-              </Typography>
-            )}
+          <form className={classes.form} onSubmit={(e) => handleSubmit(e)}>
+            <TextField
+              label="First Name *"
+              variant="outlined"
+              name="firstname"
+              onChange={onChange}
+              fullWidth
+            />
 
-            <label style={{color:'#11153e', fontWeight: 'bold'}}>Email: </label>
-            <input type="text" name="email" onChange={(e) => handleChange(e)} />
-            <br/>
-            <br/>
+            <TextField
+              label="Last Name *"
+              variant="outlined"
+              name="lastname"
+              onChange={onChange}
+              fullWidth
+            />
 
-            <label style={{color:'#11153e', fontWeight: 'bold'}}>GPA (0.0 - 4.0): </label>
-            <input type="text" name="gpa" onChange={(e) => handleChange(e)} />
-            <br/>
-            <br/>
+            <TextField
+              label="Email *"
+              variant="outlined"
+              name="email"
+              onChange={onChange}
+              fullWidth
+            />
 
-            <label style={{color:'#11153e', fontWeight: 'bold'}}>Image URL (optional): </label>
-            <input type="text" name="imageUrl" onChange={(e) => handleChange(e)} />
-            <br/>
-            <br/>
+            <TextField
+              label="GPA (0.0 - 4.0) *"
+              variant="outlined"
+              name="gpa"
+              onChange={onChange}
+              fullWidth
+            />
 
-            <label style={{color:'#11153e', fontWeight: 'bold'}}>Campus Id: </label>
-            <input type="text" name="campusId" onChange={(e) => handleChange(e)} />
-            <br/>
-            <br/>
+            <TextField
+              label="Image URL (optional)"
+              variant="outlined"
+              name="imageUrl"
+              onChange={onChange}
+              fullWidth
+            />
 
-            <Button variant="contained" color="primary" type="submit">
-              Submit
-            </Button>
-            <br/>
-            <br/>
+            {imagePreview.trim() ? (
+              <img
+                className={classes.previewImg}
+                src={imagePreview}
+                alt="Student preview"
+                onError={(ev) => {
+                  ev.currentTarget.style.display = "none";
+                }}
+              />
+            ) : null}
+
+            <TextField
+              label="Campus ID"
+              variant="outlined"
+              name="campusId"
+              onChange={onChange}
+              fullWidth
+            />
+
+            <div className={classes.buttonRow}>
+              <Button variant="contained" color="primary" type="submit">
+                Submit
+              </Button>
+            </div>
           </form>
-          </div>
+        </div>
       </div>
-    </div>    
-  )
-}
+    </div>
+  );
+};
 
 export default NewStudentView;
